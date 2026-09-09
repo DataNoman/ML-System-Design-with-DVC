@@ -1,8 +1,23 @@
-prepare:
+data_loader:
+  raw_data_path: "data/raw/stroke_risk_prediction_dataset.csv"
+
+preprocess:
+  raw_data_path: "data/raw/stroke_risk_prediction_dataset.csv"
+  train_data_path: "data/processed/train.csv"
+  test_data_path: "data/processed/test.csv"
+  target_column: "Stroke_Risk"
   test_size: 0.2
   random_state: 42
 
 train:
+  train_data_path: "data/processed/train.csv"
+  model_path: "models/model.joblib"
   n_estimators: 100
   max_depth: 5
   learning_rate: 0.05
+  random_state: 42
+
+evaluate:
+  test_data_path: "data/processed/test.csv"
+  model_path: "models/model.joblib"
+  metrics_path: "metrics.json"
