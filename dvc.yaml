@@ -1,0 +1,34 @@
+stages:
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+      - data/raw/stroke_data.csv
+      - src/preprocess.py
+    params:
+      - prepare.test_size
+      - prepare.random_state
+    outs:
+      - data/processed/train.csv
+      - data/processed/test.csv
+
+  train:
+    cmd: python src/train.py
+    deps:
+      - data/processed/train.csv
+      - src/train.py
+    params:
+      - train.n_estimators
+      - train.max_depth
+      - train.learning_rate
+    outs:
+      - models/model.joblib
+
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+      - data/processed/test.csv
+      - models/model.joblib
+      - src/evaluate.py
+    metrics:
+      - metrics.json:
+          cache: false
