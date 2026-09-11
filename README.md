@@ -12,6 +12,7 @@ This project demonstrates a complete ML system design using industry best practi
 
 ### Dataset
 The system uses the **Stroke Risk Prediction Dataset** to build and evaluate a predictive model that identifies patients at risk of stroke.
+link https://www.kaggle.com/datasets/mobeenfatimah/stroke-risk-prediction-dataset
 
 ## Key Features
 
