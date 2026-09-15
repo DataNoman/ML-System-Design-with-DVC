@@ -65,8 +65,8 @@ stages:
       size: 358408
     - path: src/evaluate.py
       hash: md5
-      md5: 4770918b01cd6d26e49109109c557cd3
-      size: 2344
+      md5: 973f5bf31d6a3af3a2ac66c7d90df333
+      size: 5714
     params:
       params.yaml:
         evaluate.metrics_path: metrics.json
@@ -75,5 +75,13 @@ stages:
     outs:
     - path: metrics.json
       hash: md5
-      md5: 83e4b9048d1a3aa63191c773e5deaab6
-      size: 123
+      md5: cec6d15b9a2e13a6a01bd471739b1bf0
+      size: 145
+    - path: reports/classification_report.txt
+      hash: md5
+      md5: 027df634e1342c2c93cc4fa15e2d7902
+      size: 389
+    - path: reports/confusion_matrix.csv
+      hash: md5
+      md5: 18c9f4cb09e78b13be8e4db7325bb4eb
+      size: 95

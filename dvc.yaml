@@ -41,6 +41,9 @@ stages:
       - evaluate.test_data_path
       - evaluate.model_path
       - evaluate.metrics_path
+    outs:
+      - reports/confusion_matrix.csv
+      - reports/classification_report.txt
     metrics:
       - metrics.json:
           cache: false
