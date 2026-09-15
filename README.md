@@ -1,140 +1,157 @@
 # ML-System-Design-with-DVC
 
-A production-ready machine learning system for stroke risk prediction using DVC (Data Version Control) and Git for reproducible ML workflows.
+A production-ready machine learning system for stroke risk prediction that uses DVC (Data Version Control) and Git for reproducible, trackable ML workflows.
 
-## Project Overview
+## Overview
 
-This project demonstrates a complete ML system design using industry best practices:
-- **Version Control**: Git for code versioning
-- **Data Pipeline Management**: DVC for tracking data, models, and metrics
-- **Reproducibility**: Deterministic pipelines with parameter management
-- **Model Evaluation**: Comprehensive metrics tracking
+This repository contains an end-to-end ML pipeline implemented with DVC to make experiments reproducible and auditable. The pipeline preprocesses raw data, trains a gradient-boosting model, and evaluates performance. All data artifacts, models, and metrics are tracked with DVC.
+
+Changes in this update
+- README rewritten to reflect the current code, dependencies, and measured metrics.
+- Installation and configuration instructions clarified.
+- Metrics in `metrics.json` updated to the latest evaluation results.
 
 ### Dataset
-The system uses the **Stroke Risk Prediction Dataset** to build and evaluate a predictive model that identifies patients at risk of stroke.
-link https://www.kaggle.com/datasets/mobeenfatimah/stroke-risk-prediction-dataset
+The project uses the Stroke Risk Prediction Dataset. Obtain it from Kaggle:
+https://www.kaggle.com/datasets/mobeenfatimah/stroke-risk-prediction-dataset
 
-## Key Features
+## Key features
+- DVC-managed pipeline (preprocess → train → evaluate)
+- Data and model versioning with DVC
+- Centralized hyperparameters in `params.yaml`
+- Metrics output stored in `metrics.json` (DVC metrics)
+- Deterministic runs via fixed random seeds
 
-✅ **Automated ML Pipeline**: Three-stage workflow (preprocess → train → evaluate)  
-✅ **Data Versioning**: DVC tracks raw and processed datasets  
-✅ **Model Artifacts**: Version-controlled model serialization  
-✅ **Metrics Tracking**: Automatic metrics collection and reporting  
-✅ **Parameter Management**: Centralized configuration via `params.yaml`  
-
-## Project Structure
+## Repository layout
 
 ```
 ├── data/
-│   ├── raw/                          # Original datasets
-│   └── processed/                    # Preprocessed train/test splits
+│   ├── raw/                          # Raw dataset (DVC-tracked)
+│   └── processed/                    # Preprocessed train/test CSVs
 ├── src/
-│   ├── preprocess.py                 # Data preprocessing stage
-│   ├── train.py                      # Model training stage
-│   └── evaluate.py                   # Model evaluation stage
-├── models/
-│   └── model.joblib                  # Trained model artifact
+│   ├── preprocess.py                 # Data cleaning & preprocessing
+│   ├── train.py                      # Model training (XGBoost-compatible)
+│   └── evaluate.py                   # Model evaluation & metrics export
+├── models/                           # Trained model artifacts (DVC-tracked)
 ├── dvc.yaml                          # DVC pipeline definition
-├── dvc.lock                          # Dependency lock file
-├── params.yaml                       # Configuration parameters
-├── metrics.json                      # Model evaluation metrics
-├── requirements.txt                  # Python dependencies
-├── .gitignore                        # Git ignore rules
+├── dvc.lock                          # DVC lock file (pinned deps)
+├── params.yaml                       # Pipeline parameters and hyperparams
+├── metrics.json                      # Latest evaluation metrics (DVC-tracked)
+├── requirements.txt                  # Python dependencies (pinned)
+├── Project Requirements.pdf          # Project specification
+├── .gitignore
 └── README.md                         # This file
 ```
 
-## ML Pipeline
+## Pipeline stages
 
-The system consists of three stages:
+1) Preprocess
+- Input: files in `data/raw/` (see `params.yaml`)  
+- Output: `data/processed/train.csv`, `data/processed/test.csv`  
+- Configurable split (default 80/20) and seed in `params.yaml`
 
-### 1. **Preprocess** 
-- **Input**: `data/raw/stroke_risk_prediction_dataset.csv`
-- **Output**: `data/processed/train.csv`, `data/processed/test.csv`
-- **Config**: 80/20 train-test split with random state 42
+2) Train
+- Input: `data/processed/train.csv`  
+- Output: model artifact saved to `models/` and tracked by DVC  
+- Uses a gradient-boosting estimator (XGBoost or scikit-learn compatible wrapper). Hyperparameters are in `params.yaml`.
 
-### 2. **Train**
-- **Input**: `data/processed/train.csv`
-- **Output**: `models/model.joblib`
-- **Algorithm**: Gradient Boosting (XGBoost-style)
-  - n_estimators: 100
-  - max_depth: 5
-  - learning_rate: 0.05
+3) Evaluate
+- Input: `data/processed/test.csv`, trained model  
+- Output: `metrics.json` with evaluation results  
+- Metrics are printed and saved so DVC can track them across experiments
 
-### 3. **Evaluate**
-- **Input**: `data/processed/test.csv`, `models/model.joblib`
-- **Output**: `metrics.json`
-- **Metrics**: 
-  - Accuracy: 1.0
-  - Precision: 1.0
-  - Recall: 1.0
-  - F1-Score: 1.0
-  - ROC-AUC: 1.0
+## Latest metrics
+
+The metrics file (metrics.json) currently contains the following results from the latest evaluation run:
+
+{
+  "accuracy": 0.9989,
+  "precision": 0.9985,
+  "recall": 0.9948,
+  "f1_score": 0.9966,
+  "roc_auc": 1.0
+}
+
+Note: If metrics look unexpectedly high, check for target leakage, data duplication between train/test splits, or evaluation on a non-representative test set.
+
+## Requirements
+
+This project was developed and tested with the following (see `requirements.txt` for exact pinned versions):
+
+- Python >= 3.8
+- pandas >= 2.0
+- numpy >= 1.24
+- scikit-learn >= 1.3
+- xgboost >= 2.0
+- imbalanced-learn >= 0.11
+- joblib >= 1.3
+- pyyaml >= 6.0
+- dvc >= 3.0
+- dvc-gdrive (optional) for Google Drive remotes
+
+If you need reproducibility across environments, use the versions pinned in `requirements.txt`.
 
 ## Installation
 
-### Prerequisites
-- Python 3.8+
-- Git
-- DVC
+1. Clone the repo:
 
-### Setup
-
-1. Clone the repository:
 ```bash
 git clone https://github.com/DataNoman/ML-System-Design-with-DVC.git
 cd ML-System-Design-with-DVC
 ```
 
-2. Create virtual environment:
+2. Create and activate a virtual environment:
+
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 ```
 
-3. Install dependencies:
+3. Install Python dependencies:
+
 ```bash
 pip install -r requirements.txt
 ```
 
+4. Install DVC and configure a remote (example for Google Drive):
+
+```bash
+pip install dvc[dvc_gdrive]
+# configure remote per your DVC remote provider
+# dvc remote add -d myremote <remote-url>
+```
+
 ## Usage
 
-### Run the full pipeline:
+Reproduce the full pipeline:
+
 ```bash
 dvc repro
 ```
 
-### Run a specific stage:
+Re-run a specific stage:
+
 ```bash
 dvc repro dvc.yaml:preprocess
 dvc repro dvc.yaml:train
 dvc repro dvc.yaml:evaluate
 ```
 
-### View pipeline DAG:
+Show pipeline DAG:
+
 ```bash
 dvc dag
 ```
 
-### Check metrics:
+Display tracked metrics:
+
 ```bash
 dvc metrics show
 ```
 
-## Dependencies
-
-- **pandas** (≥2.0.0) - Data manipulation
-- **numpy** (≥1.24.0) - Numerical computing
-- **scikit-learn** (≥1.3.0) - Machine learning algorithms
-- **xgboost** (≥2.0.0) - Gradient boosting
-- **imbalanced-learn** (≥0.11.0) - Handling imbalanced datasets
-- **joblib** (≥1.3.0) - Model serialization
-- **pyyaml** (≥6.0.1) - YAML parsing
-- **dvc** (≥3.0.0) - Pipeline orchestration
-- **dvc-gdrive** (≥3.0.0) - Google Drive remote storage
-
 ## Configuration
 
-Edit `params.yaml` to customize:
+Edit `params.yaml` to change preprocessing and training settings. Example:
 
 ```yaml
 preprocess:
@@ -149,70 +166,42 @@ train:
   random_state: 42
 
 evaluate:
-  # Metrics are automatically computed
+  # add evaluation-specific settings if needed
 ```
 
-## Reproducibility
+## Reproducibility notes & best practices
 
-- **Deterministic Results**: Fixed random states across all stages
-- **Dependency Tracking**: DVC tracks all data, code, and parameter dependencies
-- **Lock File**: `dvc.lock` ensures consistent pipeline execution
-- **Version Control**: Both code and data artifacts are version-controlled
+- Use `params.yaml` for hyperparameter and run configuration.  
+- Keep raw data DVC-tracked and do not commit large data to Git.  
+- Use `dvc.lock` and DVC remotes to reproduce experiments across machines.  
+- Validate that train/test splits are properly stratified and have no overlap.
 
-## Model Performance
+## Recommendations
 
-**Evaluation Results** (on test set):
-```json
-{
-  "accuracy": 1.0,
-  "precision": 1.0,
-  "recall": 1.0,
-  "f1_score": 1.0,
-  "roc_auc": 1.0
-}
-```
+- Use k-fold cross-validation and report mean±std for metrics before deploying.  
+- Add automated CI checks that run lightweight pipeline stages on PRs.  
+- Add experiment tracking (MLflow/Weights & Biases) if you need more advanced experiment analytics.
 
-## Best Practices Demonstrated
+## Future work
 
-1. **Separation of Concerns**: Distinct stages for preprocessing, training, and evaluation
-2. **Parameter Externalization**: Configuration in `params.yaml` rather than hardcoded
-3. **Data Versioning**: Raw and processed data tracked separately
-4. **Pipeline Orchestration**: DVC manages dependencies and execution order
-5. **Metrics Tracking**: Automatic collection without caching for reproducibility
-
-## Future Enhancements
-
-- [ ] Add cross-validation for robust model evaluation
-- [ ] Implement hyperparameter tuning
-- [ ] Add feature importance analysis
-- [ ] Expand to multiple model algorithms
-- [ ] Deploy model serving endpoint
-- [ ] Add continuous integration/continuous deployment (CI/CD)
+- Hyperparameter tuning (Optuna or grid search)
+- Feature importance and explainability reports
+- Additional models and ensemble strategies
+- Containerized model serving (Docker + FastAPI)
+- CI for linting, unit tests, and lightweight pipeline repro
 
 ## Contributing
 
-Contributions are welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Submit a pull request
+Contributions welcome — please fork, create a branch, and open a pull request. Include tests and update documentation for new features.
 
 ## License
 
-This project is open source and available under the MIT License.
+MIT License
 
 ## Author
 
-**DataNoman**
-
-## References
-
-- [DVC Documentation](https://dvc.org/doc)
-- [Git Documentation](https://git-scm.com/doc)
-- [Scikit-learn Documentation](https://scikit-learn.org)
-- [XGBoost Documentation](https://xgboost.readthedocs.io)
+DataNoman
 
 ---
 
-**Last Updated**: 2026-09-09
+**Last Updated**: 2026-09-15
