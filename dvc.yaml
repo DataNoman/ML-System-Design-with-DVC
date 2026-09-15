@@ -1,6 +1,7 @@
 stages:
+
   preprocess:
-    cmd: C:/Users/User/Downloads/ML-System-Design-with-DVC/.venv/Scripts/python.exe -m src.preprocess
+    cmd: python -m src.preprocess
     deps:
       - data/raw/stroke_risk_prediction_dataset.csv
       - src/preprocess.py
@@ -16,7 +17,7 @@ stages:
       - data/processed/test.csv
 
   train:
-    cmd: C:/Users/User/Downloads/ML-System-Design-with-DVC/.venv/Scripts/python.exe -m src.train
+    cmd: python -m src.train
     deps:
       - data/processed/train.csv
       - src/train.py
@@ -31,11 +32,15 @@ stages:
       - models/model.joblib
 
   evaluate:
-    cmd: C:/Users/User/Downloads/ML-System-Design-with-DVC/.venv/Scripts/python.exe -m src.evaluate
+    cmd: python -m src.evaluate
     deps:
       - data/processed/test.csv
       - models/model.joblib
       - src/evaluate.py
+    params:
+      - evaluate.test_data_path
+      - evaluate.model_path
+      - evaluate.metrics_path
     metrics:
       - metrics.json:
           cache: false

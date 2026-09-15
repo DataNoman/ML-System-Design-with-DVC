@@ -1,9 +1,7 @@
 schema: '2.0'
 stages:
   preprocess:
-    cmd: 
-      C:/Users/User/Downloads/ML-System-Design-with-DVC/.venv/Scripts/python.exe
-      -m src.preprocess
+    cmd: python -m src.preprocess
     deps:
     - path: data/raw/stroke_risk_prediction_dataset.csv
       hash: md5
@@ -11,8 +9,8 @@ stages:
       size: 11274705
     - path: src/preprocess.py
       hash: md5
-      md5: 9113e71e7e7a6b36f49ab1acf33db3ec
-      size: 3378
+      md5: 54ad05d72d56132df6737893fb6309e5
+      size: 12163
     params:
       params.yaml:
         preprocess.random_state: 42
@@ -24,21 +22,19 @@ stages:
     outs:
     - path: data/processed/test.csv
       hash: md5
-      md5: f280a36bcb6bca9b57519364f2b8475a
-      size: 16640259
+      md5: 9ca70b0bea960cadc7c935be5436093b
+      size: 5805471
     - path: data/processed/train.csv
       hash: md5
-      md5: 35b612d908390633326429f01c489293
-      size: 137444526
+      md5: 03a2c33b33d584bfa620013103ea083d
+      size: 54140163
   train:
-    cmd: 
-      C:/Users/User/Downloads/ML-System-Design-with-DVC/.venv/Scripts/python.exe
-      -m src.train
+    cmd: python -m src.train
     deps:
     - path: data/processed/train.csv
       hash: md5
-      md5: 35b612d908390633326429f01c489293
-      size: 137444526
+      md5: 03a2c33b33d584bfa620013103ea083d
+      size: 54140163
     - path: src/train.py
       hash: md5
       md5: 50fcfe9035fc4b2b79ea40d91d8775ca
@@ -54,27 +50,30 @@ stages:
     outs:
     - path: models/model.joblib
       hash: md5
-      md5: f72fc2fe1ea68f772b5044d19682d970
-      size: 248158
+      md5: 211ccec948bbace742313fa1f9616d1d
+      size: 358408
   evaluate:
-    cmd: 
-      C:/Users/User/Downloads/ML-System-Design-with-DVC/.venv/Scripts/python.exe
-      -m src.evaluate
+    cmd: python -m src.evaluate
     deps:
     - path: data/processed/test.csv
       hash: md5
-      md5: f280a36bcb6bca9b57519364f2b8475a
-      size: 16640259
+      md5: 9ca70b0bea960cadc7c935be5436093b
+      size: 5805471
     - path: models/model.joblib
       hash: md5
-      md5: f72fc2fe1ea68f772b5044d19682d970
-      size: 248158
+      md5: 211ccec948bbace742313fa1f9616d1d
+      size: 358408
     - path: src/evaluate.py
       hash: md5
       md5: 4770918b01cd6d26e49109109c557cd3
       size: 2344
+    params:
+      params.yaml:
+        evaluate.metrics_path: metrics.json
+        evaluate.model_path: models/model.joblib
+        evaluate.test_data_path: data/processed/test.csv
     outs:
     - path: metrics.json
       hash: md5
-      md5: 107ece0d28210681cb19eeacdf51f1b9
-      size: 111
+      md5: 83e4b9048d1a3aa63191c773e5deaab6
+      size: 123
