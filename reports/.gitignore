@@ -1,2 +1,13 @@
 /confusion_matrix.csv
 /classification_report.txt
+/xgboost_confusion_matrix.csv
+/xgboost_classification_report.txt
+/random_forest_confusion_matrix.csv
+/random_forest_classification_report.txt
+/lightgbm_confusion_matrix.csv
+/lightgbm_classification_report.txt
+/catboost_confusion_matrix.csv
+/catboost_classification_report.txt
+/logistic_regression_confusion_matrix.csv
+/logistic_regression_classification_report.txt
+/model_comparison.csv

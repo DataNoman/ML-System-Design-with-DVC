@@ -16,34 +16,164 @@ stages:
       - data/processed/train.csv
       - data/processed/test.csv
 
-  train:
-    cmd: python -m src.train
+
+  train_xgboost:
+    cmd: python -m src.train_xgboost
     deps:
       - data/processed/train.csv
-      - src/train.py
+      - src/train_xgboost.py
     params:
-      - train.train_data_path
-      - train.model_path
-      - train.n_estimators
-      - train.max_depth
-      - train.learning_rate
-      - train.random_state
+      - preprocess.train_data_path
+      - preprocess.target_column
+      - models.xgboost
     outs:
-      - models/model.joblib
+      - models/xgboost.joblib
 
-  evaluate:
-    cmd: python -m src.evaluate
+
+  evaluate_xgboost:
+    cmd: python -m src.evaluate_model --model models/xgboost.joblib --metrics metrics/xgboost.json --confusion-matrix reports/xgboost_confusion_matrix.csv --classification-report reports/xgboost_classification_report.txt
     deps:
       - data/processed/test.csv
-      - models/model.joblib
-      - src/evaluate.py
+      - models/xgboost.joblib
+      - src/evaluate_model.py
     params:
-      - evaluate.test_data_path
-      - evaluate.model_path
-      - evaluate.metrics_path
-    outs:
-      - reports/confusion_matrix.csv
-      - reports/classification_report.txt
+      - preprocess.test_data_path
+      - preprocess.target_column
     metrics:
-      - metrics.json:
+      - metrics/xgboost.json:
           cache: false
+    outs:
+      - reports/xgboost_confusion_matrix.csv
+      - reports/xgboost_classification_report.txt
+
+
+  train_random_forest:
+    cmd: python -m src.train_random_forest
+    deps:
+      - data/processed/train.csv
+      - src/train_random_forest.py
+    params:
+      - preprocess.train_data_path
+      - preprocess.target_column
+      - models.random_forest
+    outs:
+      - models/random_forest.joblib
+
+
+  evaluate_random_forest:
+    cmd: python -m src.evaluate_model --model models/random_forest.joblib --metrics metrics/random_forest.json --confusion-matrix reports/random_forest_confusion_matrix.csv --classification-report reports/random_forest_classification_report.txt
+    deps:
+      - data/processed/test.csv
+      - models/random_forest.joblib
+      - src/evaluate_model.py
+    params:
+      - preprocess.test_data_path
+      - preprocess.target_column
+    metrics:
+      - metrics/random_forest.json:
+          cache: false
+    outs:
+      - reports/random_forest_confusion_matrix.csv
+      - reports/random_forest_classification_report.txt
+
+
+  train_lightgbm:
+    cmd: python -m src.train_lightgbm
+    deps:
+      - data/processed/train.csv
+      - src/train_lightgbm.py
+    params:
+      - preprocess.train_data_path
+      - preprocess.target_column
+      - models.lightgbm
+    outs:
+      - models/lightgbm.joblib
+
+
+  evaluate_lightgbm:
+    cmd: python -m src.evaluate_model --model models/lightgbm.joblib --metrics metrics/lightgbm.json --confusion-matrix reports/lightgbm_confusion_matrix.csv --classification-report reports/lightgbm_classification_report.txt
+    deps:
+      - data/processed/test.csv
+      - models/lightgbm.joblib
+      - src/evaluate_model.py
+    params:
+      - preprocess.test_data_path
+      - preprocess.target_column
+    metrics:
+      - metrics/lightgbm.json:
+          cache: false
+    outs:
+      - reports/lightgbm_confusion_matrix.csv
+      - reports/lightgbm_classification_report.txt
+
+
+  train_catboost:
+    cmd: python -m src.train_catboost
+    deps:
+      - data/processed/train.csv
+      - src/train_catboost.py
+    params:
+      - preprocess.train_data_path
+      - preprocess.target_column
+      - models.catboost
+    outs:
+      - models/catboost.joblib
+
+
+  evaluate_catboost:
+    cmd: python -m src.evaluate_model --model models/catboost.joblib --metrics metrics/catboost.json --confusion-matrix reports/catboost_confusion_matrix.csv --classification-report reports/catboost_classification_report.txt
+    deps:
+      - data/processed/test.csv
+      - models/catboost.joblib
+      - src/evaluate_model.py
+    params:
+      - preprocess.test_data_path
+      - preprocess.target_column
+    metrics:
+      - metrics/catboost.json:
+          cache: false
+    outs:
+      - reports/catboost_confusion_matrix.csv
+      - reports/catboost_classification_report.txt
+
+
+  train_logistic:
+    cmd: python -m src.train_logistic
+    deps:
+      - data/processed/train.csv
+      - src/train_logistic.py
+    params:
+      - preprocess.train_data_path
+      - preprocess.target_column
+      - models.logistic_regression
+    outs:
+      - models/logistic_regression.joblib
+
+
+  evaluate_logistic:
+    cmd: python -m src.evaluate_model --model models/logistic_regression.joblib --metrics metrics/logistic_regression.json --confusion-matrix reports/logistic_regression_confusion_matrix.csv --classification-report reports/logistic_regression_classification_report.txt
+    deps:
+      - data/processed/test.csv
+      - models/logistic_regression.joblib
+      - src/evaluate_model.py
+    params:
+      - preprocess.test_data_path
+      - preprocess.target_column
+    metrics:
+      - metrics/logistic_regression.json:
+          cache: false
+    outs:
+      - reports/logistic_regression_confusion_matrix.csv
+      - reports/logistic_regression_classification_report.txt
+
+  compare_models:
+    cmd: python -m src.compare_models
+    deps:
+      - metrics/xgboost.json
+      - metrics/random_forest.json
+      - metrics/lightgbm.json
+      - metrics/catboost.json
+      - metrics/logistic_regression.json
+      - src/compare_models.py
+    outs:
+      - reports/model_comparison.csv

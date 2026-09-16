@@ -85,3 +85,341 @@ stages:
       hash: md5
       md5: 18c9f4cb09e78b13be8e4db7325bb4eb
       size: 95
+  train_xgboost:
+    cmd: python -m src.train_xgboost
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 03a2c33b33d584bfa620013103ea083d
+      size: 54140163
+    - path: src/train_xgboost.py
+      hash: md5
+      md5: 32671a6bf833c68d8f8cd6d48512080a
+      size: 1315
+    params:
+      params.yaml:
+        models.xgboost:
+          model_path: models/xgboost.joblib
+          n_estimators: 100
+          max_depth: 5
+          learning_rate: 0.05
+          random_state: 42
+        preprocess.target_column: Stroke_Risk
+        preprocess.train_data_path: data/processed/train.csv
+    outs:
+    - path: models/xgboost.joblib
+      hash: md5
+      md5: 211ccec948bbace742313fa1f9616d1d
+      size: 358408
+  evaluate_xgboost:
+    cmd: python -m src.evaluate_model --model models/xgboost.joblib --metrics 
+      metrics/xgboost.json --confusion-matrix 
+      reports/xgboost_confusion_matrix.csv --classification-report 
+      reports/xgboost_classification_report.txt
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 9ca70b0bea960cadc7c935be5436093b
+      size: 5805471
+    - path: models/xgboost.joblib
+      hash: md5
+      md5: 211ccec948bbace742313fa1f9616d1d
+      size: 358408
+    - path: src/evaluate_model.py
+      hash: md5
+      md5: f5d4343cb09047503304d110fb2f0adf
+      size: 4139
+    params:
+      params.yaml:
+        preprocess.target_column: Stroke_Risk
+        preprocess.test_data_path: data/processed/test.csv
+    outs:
+    - path: metrics/xgboost.json
+      hash: md5
+      md5: b54abb2113e4859d6215dcb79a8b7ebc
+      size: 185
+    - path: reports/xgboost_classification_report.txt
+      hash: md5
+      md5: 027df634e1342c2c93cc4fa15e2d7902
+      size: 389
+    - path: reports/xgboost_confusion_matrix.csv
+      hash: md5
+      md5: 737857f344991ba4ab6f83aaf261deb7
+      size: 37
+  train_random_forest:
+    cmd: python -m src.train_random_forest
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 03a2c33b33d584bfa620013103ea083d
+      size: 54140163
+    - path: src/train_random_forest.py
+      hash: md5
+      md5: fe0c1b18450ca35cf5ae575838f90046
+      size: 1345
+    params:
+      params.yaml:
+        models.random_forest:
+          model_path: models/random_forest.joblib
+          n_estimators: 100
+          max_depth: 10
+          random_state: 42
+          n_jobs: -1
+        preprocess.target_column: Stroke_Risk
+        preprocess.train_data_path: data/processed/train.csv
+    outs:
+    - path: models/random_forest.joblib
+      hash: md5
+      md5: 5da1df70eca0f975ee44e093ac99fc23
+      size: 1430369
+  evaluate_random_forest:
+    cmd: python -m src.evaluate_model --model models/random_forest.joblib 
+      --metrics metrics/random_forest.json --confusion-matrix 
+      reports/random_forest_confusion_matrix.csv --classification-report 
+      reports/random_forest_classification_report.txt
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 9ca70b0bea960cadc7c935be5436093b
+      size: 5805471
+    - path: models/random_forest.joblib
+      hash: md5
+      md5: 5da1df70eca0f975ee44e093ac99fc23
+      size: 1430369
+    - path: src/evaluate_model.py
+      hash: md5
+      md5: f5d4343cb09047503304d110fb2f0adf
+      size: 4139
+    params:
+      params.yaml:
+        preprocess.target_column: Stroke_Risk
+        preprocess.test_data_path: data/processed/test.csv
+    outs:
+    - path: metrics/random_forest.json
+      hash: md5
+      md5: 58ff5fdf037862f680ab1b2fb4d20b9c
+      size: 184
+    - path: reports/random_forest_classification_report.txt
+      hash: md5
+      md5: 4aa8930519a73b465d4c05846436cc79
+      size: 389
+    - path: reports/random_forest_confusion_matrix.csv
+      hash: md5
+      md5: 2badb3b572e7e58605bb129362ad1549
+      size: 37
+  train_lightgbm:
+    cmd: python -m src.train_lightgbm
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 03a2c33b33d584bfa620013103ea083d
+      size: 54140163
+    - path: src/train_lightgbm.py
+      hash: md5
+      md5: 1618dbc125f6cac08bf011a7c10dbaed
+      size: 1358
+    params:
+      params.yaml:
+        models.lightgbm:
+          model_path: models/lightgbm.joblib
+          n_estimators: 100
+          max_depth: 7
+          learning_rate: 0.05
+          random_state: 42
+          n_jobs: -1
+        preprocess.target_column: Stroke_Risk
+        preprocess.train_data_path: data/processed/train.csv
+    outs:
+    - path: models/lightgbm.joblib
+      hash: md5
+      md5: 0001024103e8f413982f09fa8a547806
+      size: 1071452
+  evaluate_lightgbm:
+    cmd: python -m src.evaluate_model --model models/lightgbm.joblib --metrics 
+      metrics/lightgbm.json --confusion-matrix 
+      reports/lightgbm_confusion_matrix.csv --classification-report 
+      reports/lightgbm_classification_report.txt
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 9ca70b0bea960cadc7c935be5436093b
+      size: 5805471
+    - path: models/lightgbm.joblib
+      hash: md5
+      md5: 0001024103e8f413982f09fa8a547806
+      size: 1071452
+    - path: src/evaluate_model.py
+      hash: md5
+      md5: f5d4343cb09047503304d110fb2f0adf
+      size: 4139
+    params:
+      params.yaml:
+        preprocess.target_column: Stroke_Risk
+        preprocess.test_data_path: data/processed/test.csv
+    outs:
+    - path: metrics/lightgbm.json
+      hash: md5
+      md5: f450374fe71385ad94052d9c5d87f9e4
+      size: 185
+    - path: reports/lightgbm_classification_report.txt
+      hash: md5
+      md5: 027df634e1342c2c93cc4fa15e2d7902
+      size: 389
+    - path: reports/lightgbm_confusion_matrix.csv
+      hash: md5
+      md5: 737857f344991ba4ab6f83aaf261deb7
+      size: 37
+  train_catboost:
+    cmd: python -m src.train_catboost
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 03a2c33b33d584bfa620013103ea083d
+      size: 54140163
+    - path: src/train_catboost.py
+      hash: md5
+      md5: 26ff79160053fae08f5ccd3125896be9
+      size: 1332
+    params:
+      params.yaml:
+        models.catboost:
+          model_path: models/catboost.joblib
+          iterations: 100
+          depth: 7
+          learning_rate: 0.05
+          random_state: 42
+          verbose: false
+        preprocess.target_column: Stroke_Risk
+        preprocess.train_data_path: data/processed/train.csv
+    outs:
+    - path: models/catboost.joblib
+      hash: md5
+      md5: 626aabfe0822a1e744184815eb91c7de
+      size: 433397
+  evaluate_catboost:
+    cmd: python -m src.evaluate_model --model models/catboost.joblib --metrics 
+      metrics/catboost.json --confusion-matrix 
+      reports/catboost_confusion_matrix.csv --classification-report 
+      reports/catboost_classification_report.txt
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 9ca70b0bea960cadc7c935be5436093b
+      size: 5805471
+    - path: models/catboost.joblib
+      hash: md5
+      md5: 626aabfe0822a1e744184815eb91c7de
+      size: 433397
+    - path: src/evaluate_model.py
+      hash: md5
+      md5: f5d4343cb09047503304d110fb2f0adf
+      size: 4139
+    params:
+      params.yaml:
+        preprocess.target_column: Stroke_Risk
+        preprocess.test_data_path: data/processed/test.csv
+    outs:
+    - path: metrics/catboost.json
+      hash: md5
+      md5: 5742c28a60c950c8be60a824a7cd8ec1
+      size: 170
+    - path: reports/catboost_classification_report.txt
+      hash: md5
+      md5: 027df634e1342c2c93cc4fa15e2d7902
+      size: 389
+    - path: reports/catboost_confusion_matrix.csv
+      hash: md5
+      md5: 737857f344991ba4ab6f83aaf261deb7
+      size: 37
+  train_logistic:
+    cmd: python -m src.train_logistic
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 03a2c33b33d584bfa620013103ea083d
+      size: 54140163
+    - path: src/train_logistic.py
+      hash: md5
+      md5: 0de376d286f1621f7d95236c5275ed4c
+      size: 1304
+    params:
+      params.yaml:
+        models.logistic_regression:
+          model_path: models/logistic_regression.joblib
+          C: 1.0
+          max_iter: 1000
+          random_state: 42
+        preprocess.target_column: Stroke_Risk
+        preprocess.train_data_path: data/processed/train.csv
+    outs:
+    - path: models/logistic_regression.joblib
+      hash: md5
+      md5: d2aedc07c87c9aea29d93c628dce1beb
+      size: 5151
+  evaluate_logistic:
+    cmd: python -m src.evaluate_model --model models/logistic_regression.joblib 
+      --metrics metrics/logistic_regression.json --confusion-matrix 
+      reports/logistic_regression_confusion_matrix.csv --classification-report 
+      reports/logistic_regression_classification_report.txt
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 9ca70b0bea960cadc7c935be5436093b
+      size: 5805471
+    - path: models/logistic_regression.joblib
+      hash: md5
+      md5: d2aedc07c87c9aea29d93c628dce1beb
+      size: 5151
+    - path: src/evaluate_model.py
+      hash: md5
+      md5: f5d4343cb09047503304d110fb2f0adf
+      size: 4139
+    params:
+      params.yaml:
+        preprocess.target_column: Stroke_Risk
+        preprocess.test_data_path: data/processed/test.csv
+    outs:
+    - path: metrics/logistic_regression.json
+      hash: md5
+      md5: 9ab06cd0dc015efe2e5a4cef169a064d
+      size: 123
+    - path: reports/logistic_regression_classification_report.txt
+      hash: md5
+      md5: 5015a4f64602ee4f31937ccf2487d17b
+      size: 389
+    - path: reports/logistic_regression_confusion_matrix.csv
+      hash: md5
+      md5: 88c50a028dd05b4a1ae95ca55c69b06c
+      size: 36
+  compare_models:
+    cmd: python -m src.compare_models
+    deps:
+    - path: metrics/catboost.json
+      hash: md5
+      md5: 5742c28a60c950c8be60a824a7cd8ec1
+      size: 170
+    - path: metrics/lightgbm.json
+      hash: md5
+      md5: f450374fe71385ad94052d9c5d87f9e4
+      size: 185
+    - path: metrics/logistic_regression.json
+      hash: md5
+      md5: 9ab06cd0dc015efe2e5a4cef169a064d
+      size: 123
+    - path: metrics/random_forest.json
+      hash: md5
+      md5: 58ff5fdf037862f680ab1b2fb4d20b9c
+      size: 184
+    - path: metrics/xgboost.json
+      hash: md5
+      md5: b54abb2113e4859d6215dcb79a8b7ebc
+      size: 185
+    - path: src/compare_models.py
+      hash: md5
+      md5: f830dae7e1c5b413d3f56c910d9004a7
+      size: 1552
+    outs:
+    - path: reports/model_comparison.csv
+      hash: md5
+      md5: 264cdbbda1cb5efc72291e762917b8b6
+      size: 441

@@ -1,1 +1,6 @@
 /model.joblib
+/xgboost.joblib
+/random_forest.joblib
+/lightgbm.joblib
+/catboost.joblib
+/logistic_regression.joblib
