@@ -16,6 +16,7 @@ This project builds a classification system that predicts one of three stroke-ri
 - **Low**
 - **Moderate**
 - **High**
+Dataset: https://www.kaggle.com/datasets/mobeenfatimah/stroke-risk-prediction-dataset
 
 Instead of relying on a single model, the system trains and evaluates **five different classification algorithms** using the same preprocessing and train/test split:
 
@@ -526,6 +527,12 @@ cd ML-System-Design-with-DVC
 ## 2. Create a Virtual Environment
 
 Windows PowerShell:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+```
+
+Create venv:
 
 ```powershell
 python -m venv .venv
