@@ -16,6 +16,7 @@ This project builds a classification system that predicts one of three stroke-ri
 - **Low**
 - **Moderate**
 - **High**
+https://www.kaggle.com/datasets/mobeenfatimah/stroke-risk-prediction-dataset
 
 Instead of relying on a single model, the system trains and evaluates **five different classification algorithms** using the same preprocessing and train/test split:
 
